@@ -7,10 +7,11 @@
 const fs = require('fs');
 const path = require('path');
 
-const DATA_DIR = path.dirname(__dirname);
+const REPO_ROOT = path.dirname(__dirname);
+const SENSITIVE_WORDS_DIR = path.join(REPO_ROOT, 'data', 'sensitive_words');
+const STOPWORDS_DIR = path.join(REPO_ROOT, 'data', 'stopwords');
 
-function loadWords(filename, delimiter = '\n') {
-  const filepath = path.join(DATA_DIR, filename);
+function loadWords(filepath, delimiter = '\n') {
   const content = fs.readFileSync(filepath, 'utf-8');
 
   return content.split(delimiter)
@@ -52,13 +53,13 @@ function main() {
   const start = Date.now();
 
   const sensitiveWords = buildFilterSet([
-    ['色情类.txt', ','],
-    ['政治类.txt', ','],
-    ['广告.txt', '\n'],
-    ['涉枪涉爆违法信息关键词.txt', '\n'],
+    [path.join(SENSITIVE_WORDS_DIR, '色情类.txt'), ','],
+    [path.join(SENSITIVE_WORDS_DIR, '政治类.txt'), ','],
+    [path.join(SENSITIVE_WORDS_DIR, '广告.txt'), '\n'],
+    [path.join(SENSITIVE_WORDS_DIR, '涉枪涉爆违法信息关键词.txt'), '\n'],
   ]);
 
-  const stopwords = new Set(loadWords('stopword.dic'));
+  const stopwords = new Set(loadWords(path.join(STOPWORDS_DIR, 'stopword.dic')));
 
   const elapsed = Date.now() - start;
   console.log(`加载完成: ${sensitiveWords.size} 条敏感词, ${stopwords.size} 条停止词 (${elapsed}ms)\n`);

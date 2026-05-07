@@ -43,7 +43,9 @@ git checkout -b feature/your-feature-name
 
 #### 词条格式规范
 
-**每行一词格式**（推荐，适用于 `广告.txt`、`涉枪涉爆违法信息关键词.txt`、`stopword.dic`）：
+敏感词文件统一放在 `data/sensitive_words/`，停止词文件放在 `data/stopwords/`。
+
+**每行一词格式**（推荐，适用于 `data/sensitive_words/广告.txt`、`data/sensitive_words/涉枪涉爆违法信息关键词.txt`、`data/stopwords/stopword.dic`）：
 
 ```
 词条A
@@ -51,7 +53,7 @@ git checkout -b feature/your-feature-name
 词条C
 ```
 
-**逗号分隔格式**（适用于 `色情类.txt`、`政治类.txt`）：
+**逗号分隔格式**（适用于 `data/sensitive_words/色情类.txt`、`data/sensitive_words/政治类.txt`）：
 
 ```
 词条A,词条B,词条C
@@ -108,7 +110,7 @@ git push origin feature/your-feature-name
 如果你希望新增一个词库分类（如"赌博类"、"暴力类"等），请：
 
 1. 先创建 Issue 讨论该分类的必要性和范围
-2. 获得维护者同意后，创建对应的 `.txt` 文件
+2. 获得维护者同意后，在 `data/sensitive_words/` 创建对应的 `.txt` 文件
 3. 遵循现有的格式规范
 4. 在 README 中更新词库概览表
 

@@ -39,11 +39,13 @@ public class SensitiveWordFilter {
     }
 
     public void loadAll(String dataDir) throws IOException {
-        sensitiveWords.addAll(loadCommaSeparated(dataDir + "/色情类.txt"));
-        sensitiveWords.addAll(loadCommaSeparated(dataDir + "/政治类.txt"));
-        sensitiveWords.addAll(loadLineSeparated(dataDir + "/广告.txt"));
-        sensitiveWords.addAll(loadLineSeparated(dataDir + "/涉枪涉爆违法信息关键词.txt"));
-        stopwords.addAll(loadLineSeparated(dataDir + "/stopword.dic"));
+        String sensitiveWordsDir = dataDir + "/data/sensitive_words";
+        String stopwordsDir = dataDir + "/data/stopwords";
+        sensitiveWords.addAll(loadCommaSeparated(sensitiveWordsDir + "/色情类.txt"));
+        sensitiveWords.addAll(loadCommaSeparated(sensitiveWordsDir + "/政治类.txt"));
+        sensitiveWords.addAll(loadLineSeparated(sensitiveWordsDir + "/广告.txt"));
+        sensitiveWords.addAll(loadLineSeparated(sensitiveWordsDir + "/涉枪涉爆违法信息关键词.txt"));
+        stopwords.addAll(loadLineSeparated(stopwordsDir + "/stopword.dic"));
     }
 
     public List<String> check(String text) {

@@ -13,20 +13,22 @@ import os
 import sys
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SENSITIVE_WORDS_DIR = os.path.join(REPO_ROOT, "data", "sensitive_words")
+STOPWORDS_DIR = os.path.join(REPO_ROOT, "data", "stopwords")
 
-LINE_SEPARATED_FILES = [
-    ("广告.txt", "\n"),
-    ("涉枪涉爆违法信息关键词.txt", "\n"),
-    ("网址.txt", "\n"),
-    ("stopword.dic", "\n"),
-]
 
-COMMA_SEPARATED_FILES = [
-    ("色情类.txt", ","),
-    ("政治类.txt", ","),
-]
-
-ALL_FILES = LINE_SEPARATED_FILES + COMMA_SEPARATED_FILES
+def discover_files():
+    files = []
+    for dirname, suffixes in (
+        (SENSITIVE_WORDS_DIR, (".txt",)),
+        (STOPWORDS_DIR, (".dic", ".txt")),
+    ):
+        if not os.path.isdir(dirname):
+            continue
+        for filename in sorted(os.listdir(dirname)):
+            if filename.endswith(suffixes):
+                files.append(os.path.join(dirname, filename))
+    return files
 
 
 def check_encoding(filepath):
@@ -39,17 +41,21 @@ def check_encoding(filepath):
         return False
 
 
-def load_words(filepath, delimiter):
+def split_words(content):
+    comma_count = content.count(",")
+    line_count = len(content.splitlines())
+    if comma_count >= max(1, line_count // 2):
+        raw_words = content.split(",")
+    else:
+        raw_words = content.splitlines()
+    return [w.strip() for w in raw_words]
+
+
+def load_words(filepath):
     """加载词条列表"""
     with open(filepath, "r", encoding="utf-8") as f:
         content = f.read()
-
-    if delimiter == ",":
-        words = [w.strip() for w in content.split(",")]
-    else:
-        words = [line.strip() for line in content.splitlines()]
-
-    return words
+    return split_words(content)
 
 
 def find_duplicates(words):
@@ -81,8 +87,8 @@ def main():
     print("=" * 60)
     print()
 
-    for filename, delimiter in ALL_FILES:
-        filepath = os.path.join(REPO_ROOT, filename)
+    for filepath in discover_files():
+        filename = os.path.relpath(filepath, REPO_ROOT)
 
         if not os.path.exists(filepath):
             print(f"  [SKIP] {filename} — 文件不存在")
@@ -95,7 +101,7 @@ def main():
             errors += 1
             continue
 
-        words = load_words(filepath, delimiter)
+        words = load_words(filepath)
         non_empty = [w for w in words if w]
         total_words += len(non_empty)
 

@@ -4,13 +4,13 @@ on:
   push:
     branches: [master, main]
     paths:
-      - '*.txt'
-      - '*.dic'
+      - '**/*.txt'
+      - '**/*.dic'
   pull_request:
     branches: [master, main]
     paths:
-      - '*.txt'
-      - '*.dic'
+      - '**/*.txt'
+      - '**/*.dic'
 
 jobs:
   validate:
@@ -30,7 +30,7 @@ jobs:
 
       - name: Check file encoding
         run: |
-          for file in *.txt *.dic; do
+          while IFS= read -r file; do
             if [ -f "$file" ]; then
               encoding=$(file -bi "$file" | grep -oP 'charset=\K[^ ]+')
               if [[ "$encoding" != "utf-8" && "$encoding" != "us-ascii" ]]; then
@@ -38,5 +38,5 @@ jobs:
                 exit 1
               fi
             fi
-          done
+          done < <(find data -type f \( -name "*.txt" -o -name "*.dic" \))
           echo "All files are UTF-8 encoded."

@@ -8,18 +8,35 @@
 import os
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-FILES = {
-    "色情类.txt": ",",
-    "政治类.txt": ",",
-    "广告.txt": "\n",
-    "涉枪涉爆违法信息关键词.txt": "\n",
-    "网址.txt": "\n",
-    "stopword.dic": "\n",
-}
+SENSITIVE_WORDS_DIR = os.path.join(REPO_ROOT, "data", "sensitive_words")
+STOPWORDS_DIR = os.path.join(REPO_ROOT, "data", "stopwords")
 
 
-def count_words(filepath, delimiter):
+def discover_files():
+    files = []
+    for dirname, suffixes in (
+        (SENSITIVE_WORDS_DIR, (".txt",)),
+        (STOPWORDS_DIR, (".dic", ".txt")),
+    ):
+        if not os.path.isdir(dirname):
+            continue
+        for filename in sorted(os.listdir(dirname)):
+            if filename.endswith(suffixes):
+                files.append(os.path.join(dirname, filename))
+    return files
+
+
+def split_words(content):
+    comma_count = content.count(",")
+    line_count = len(content.splitlines())
+    if comma_count >= max(1, line_count // 2):
+        raw_words = content.split(",")
+    else:
+        raw_words = content.splitlines()
+    return [w.strip() for w in raw_words if w.strip()]
+
+
+def count_words(filepath):
     for enc in ("utf-8", "utf-16", "gbk"):
         try:
             with open(filepath, "r", encoding=enc) as f:
@@ -30,11 +47,7 @@ def count_words(filepath, delimiter):
     else:
         return -1, -1
 
-    if delimiter == ",":
-        words = [w.strip() for w in content.split(",") if w.strip()]
-    else:
-        words = [line.strip() for line in content.splitlines() if line.strip()]
-
+    words = split_words(content)
     unique = set(words)
     return len(words), len(unique)
 
@@ -46,13 +59,13 @@ def main():
     print(f"{'文件':<35} {'总数':>8} {'去重后':>8}")
     print("-" * 55)
 
-    for filename, delimiter in FILES.items():
-        filepath = os.path.join(REPO_ROOT, filename)
+    for filepath in discover_files():
+        filename = os.path.relpath(filepath, REPO_ROOT)
         if not os.path.exists(filepath):
             print(f"{filename:<35} {'N/A':>8} {'N/A':>8}")
             continue
 
-        count, unique = count_words(filepath, delimiter)
+        count, unique = count_words(filepath)
         total += count
         total_unique += unique
         print(f"{filename:<35} {count:>8} {unique:>8}")

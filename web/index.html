@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>敏感词检测</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="workspace">
+        <div class="editor">
+          <div class="topbar">
+            <div>
+              <h1>敏感词检测</h1>
+              <p>模型输入预检</p>
+            </div>
+            <div id="status" class="status neutral">待检测</div>
+          </div>
+
+          <textarea id="textInput" spellcheck="false" placeholder="粘贴或输入完整内容，换行会作为同一段文本检测。"></textarea>
+
+          <div class="actions">
+            <button id="checkButton" class="primary" type="button">检测</button>
+            <button id="clearButton" type="button">清空</button>
+            <label class="limit">
+              原因上限
+              <input id="maxReasons" type="number" min="1" max="100" value="20">
+            </label>
+          </div>
+        </div>
+
+        <aside class="result">
+          <div class="resultHead">
+            <span>检测结果</span>
+            <strong id="verdict">-</strong>
+          </div>
+          <div id="summary" class="summary">输入内容后点击检测。</div>
+          <div id="reasons" class="reasons"></div>
+        </aside>
+      </section>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>

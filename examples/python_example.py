@@ -8,12 +8,13 @@ Python 使用示例
 import os
 import time
 
-DATA_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SENSITIVE_WORDS_DIR = os.path.join(REPO_ROOT, "data", "sensitive_words")
+STOPWORDS_DIR = os.path.join(REPO_ROOT, "data", "stopwords")
 
 
-def load_words(filename, delimiter="\n"):
+def load_words(filepath, delimiter="\n"):
     """加载词库文件，返回词条列表"""
-    filepath = os.path.join(DATA_DIR, filename)
     with open(filepath, "r", encoding="utf-8") as f:
         content = f.read()
 
@@ -58,13 +59,13 @@ def main():
     start = time.time()
 
     sensitive_words = build_filter_set([
-        ("色情类.txt", ","),
-        ("政治类.txt", ","),
-        ("广告.txt", "\n"),
-        ("涉枪涉爆违法信息关键词.txt", "\n"),
+        (os.path.join(SENSITIVE_WORDS_DIR, "色情类.txt"), ","),
+        (os.path.join(SENSITIVE_WORDS_DIR, "政治类.txt"), ","),
+        (os.path.join(SENSITIVE_WORDS_DIR, "广告.txt"), "\n"),
+        (os.path.join(SENSITIVE_WORDS_DIR, "涉枪涉爆违法信息关键词.txt"), "\n"),
     ])
 
-    stopwords = set(load_words("stopword.dic"))
+    stopwords = set(load_words(os.path.join(STOPWORDS_DIR, "stopword.dic")))
 
     elapsed = time.time() - start
     print(f"加载完成: {len(sensitive_words)} 条敏感词, {len(stopwords)} 条停止词 ({elapsed:.2f}s)\n")

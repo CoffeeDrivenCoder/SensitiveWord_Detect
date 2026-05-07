@@ -63,7 +63,9 @@ func ReplaceSensitive(text string, words []string, mask rune) string {
 }
 
 func main() {
-	dataDir := filepath.Join("..")
+	repoRoot := filepath.Join("..")
+	sensitiveWordsDir := filepath.Join(repoRoot, "data", "sensitive_words")
+	stopwordsDir := filepath.Join(repoRoot, "data", "stopwords")
 
 	fmt.Println("加载词库...")
 	start := time.Now()
@@ -80,7 +82,7 @@ func main() {
 	}
 
 	for _, f := range files {
-		path := filepath.Join(dataDir, f.name)
+		path := filepath.Join(sensitiveWordsDir, f.name)
 		var words []string
 		var err error
 		if f.comma {
@@ -95,7 +97,7 @@ func main() {
 		allWords = append(allWords, words...)
 	}
 
-	stopwords, _ := LoadWords(filepath.Join(dataDir, "stopword.dic"))
+	stopwords, _ := LoadWords(filepath.Join(stopwordsDir, "stopword.dic"))
 
 	elapsed := time.Since(start)
 	fmt.Printf("加载完成: %d 条敏感词, %d 条停止词 (%v)\n\n", len(allWords), len(stopwords), elapsed)
