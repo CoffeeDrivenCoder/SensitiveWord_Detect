@@ -34,14 +34,18 @@ function renderResult(result) {
   }
 
   setState("bad", "命中");
-  summaryEl.textContent = `输入内容命中 ${result.reasons.length} 条敏感词规则。`;
+  const words = [...new Set(result.reasons.map((item) => item.word))];
+  summaryEl.textContent = `输入内容命中 ${result.reasons.length} 条敏感词规则。问题词：${words.join("、")}`;
 
   reasonsEl.innerHTML = result.reasons.map((item) => `
     <div class="reason">
+      <div class="badWord">
+        <span>问题词</span>
+        <b>${escapeHtml(item.word)}</b>
+      </div>
       <strong>${escapeHtml(item.reason)}</strong>
       <div class="meta">
         <span>分类：${escapeHtml(item.category)}</span>
-        <span>词条：${escapeHtml(item.word)}</span>
         <span>来源：${escapeHtml(item.source)}</span>
       </div>
     </div>

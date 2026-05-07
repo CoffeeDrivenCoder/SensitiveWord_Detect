@@ -203,6 +203,7 @@ button.primary:hover {
   color: var(--muted);
   background: #fbfcff;
   line-height: 1.6;
+  word-break: break-word;
 }
 
 .summary.ok {
@@ -227,6 +228,31 @@ button.primary:hover {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #ffffff;
+}
+
+.badWord {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.badWord span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.badWord b {
+  display: inline-block;
+  max-width: 100%;
+  padding: 5px 10px;
+  border-radius: 8px;
+  color: var(--red);
+  background: var(--red-bg);
+  border: 1px solid #fed7aa;
+  font-size: 18px;
+  line-height: 1.35;
+  word-break: break-word;
 }
 
 .reason strong {
